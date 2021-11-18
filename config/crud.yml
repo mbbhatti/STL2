@@ -1,0 +1,301 @@
+localization:
+  label: Localization
+  table: localization
+  listFields: [locale, key, text]
+  fields:
+    locale:
+      type: text
+      label: Locale
+      required: true
+    key:
+      type: text
+      label: Key
+      required: true
+    text:
+      type: multiline
+      label: Text
+      required: true
+      description: if used for strings containing an input field, use [_] as placeholder where the app should render the actual input field
+study:
+  label: Study
+  table: study
+  listFields: [name, published]
+  fields:
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+    published:
+      type: datetime
+      label: Published
+feature:
+  label: Features
+  table: feature
+  listFields: [name]
+  fields:
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+group:
+  label: Groups
+  table: group
+  listFields: [name, group_feature]
+  fields:
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+    group_feature:
+      type: many
+      many:
+        entity: feature
+        nameField: name
+        thisField: group
+        thatField: feature
+      label: Features
+      required: true
+configuration:
+  label: Configuration
+  table: configuration
+  listFields: [key, value, group_configuration]
+  fields:
+    key:
+      type: text
+      label: Key
+      required: true
+      unique: true
+    value:
+      type: multiline
+      label: Value
+      description: The configuration for the given key. Multiple values can be given line by line.
+      required: true
+    group_configuration:
+      type: many
+      many:
+        entity: group
+        nameField: name
+        thisField: configuration
+        thatField: group
+      label: Groups
+      required: true
+questionnaire:
+  label: Questionnaires
+  table: questionnaire
+  listFields: [study, name, label, order, moment]
+  fields:
+    study:
+      type: reference
+      reference:
+        nameField: name
+        entity: study
+      label: Study
+      required: true
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+    label:
+      type: text
+      label: Label
+      required: true
+    order:
+      type: integer
+      label: Order
+      required: true
+    moment:
+      type: set
+      items: ["baseline", "daily_calculated_five_days_before_menstruation", "calculated_five_days_before_menstruation", "calculated_first_day_of_menstruation", "daily_during_menstruation", "end_of_each_menstruation", "end_of_every_third_menstruation", "miscellaneous"]
+      label: Moment of Question
+      required: true
+metaQuestion:
+  label: Meta Questions
+  table: meta_question
+  listFields: [name, meta_question_group, questionnaire_meta_question, order, published]
+  fields:
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+    headline:
+      type: text
+      label: Headline
+    label:
+      type: text
+      label: Label
+    questionnaire_meta_question:
+      type: many
+      many:
+        entity: questionnaire
+        nameField: name
+        thisField: meta_question
+        thatField: questionnaire
+      label: Questionnaires
+      required: true
+    meta_question_group:
+      type: many
+      many:
+        entity: group
+        nameField: name
+        thisField: meta_question
+        thatField: group
+      label: Groups
+      required: true
+    order:
+      type: integer
+      label: Order within questionnaire
+      required: true
+    published:
+      label: Published
+      type: boolean
+freeInputQuestion:
+  label: Free Input Questions
+  listFields: [meta_question, text, type, answer_id, min, max]
+  table: free_input_question
+  fields:
+    meta_question:
+      type: reference
+      reference:
+        nameField: name
+        entity: metaQuestion
+      label: Meta Question
+      required: true
+      unique: true
+    text:
+      type: text
+      label: Text
+      required: true
+    type:
+      type: set
+      label: Type
+      items: [text, integer, date]
+      required: true
+    answer_id:
+      type: text
+      label: Answer Id
+      required: true
+      unique: true
+    min:
+      type: integer
+      label: Minimum
+    max:
+      type: integer
+      label: Maximum
+scaleQuestion:
+  label: Scale Questions
+  table: scale_question
+  listFields: [meta_question, min_text, min_value, max_text, max_value, answer_id]
+  fields:
+    meta_question:
+      type: reference
+      reference:
+        nameField: name
+        entity: metaQuestion
+      label: Meta Question
+      required: true
+      unique: true
+    min_text:
+      type: text
+      label: Minimum Description
+      description: Description for minimum
+      required: true
+    min_value:
+      type: integer
+      label: Minimum Value
+      description: Value for minimum
+      required: true
+    max_text:
+      type: text
+      label: Maximum Description
+      description: Description for maximum
+      required: true
+    max_value:
+      type: integer
+      label: Maximum Value
+      description: Value for maximum
+      required: true
+    answer_id:
+      type: text
+      label: Answer Id
+      required: true
+      unique: true
+choiceQuestion:
+  label: Choice Questions
+  table: choice_question
+  childrenLabelFields:
+    choice: name
+  listFields: [meta_question, choice_question_choice, type]
+  fields:
+    meta_question:
+      type: reference
+      reference:
+        nameField: name
+        entity: metaQuestion
+      label: Meta Question
+      required: true
+      unique: true
+    choice_question_choice:
+      type: many
+      many:
+        entity: choice
+        nameField: name
+        thisField: choice_question
+        thatField: choice
+      label: Choices
+      required: true
+    type:
+      type: set
+      items: [bmi, button, choice, list, multiple, radio, steps]
+      required: true
+    answer_id:
+      type: text
+      label: Answer Id
+choice:
+  label: Choice
+  table: choice
+  listFields: [name, text, order, type, answer_id, answer_value, min, max, meta_question]
+  fields:
+    name:
+      type: text
+      label: Name
+      required: true
+      unique: true
+    text:
+      type: text
+      label: Text
+    order:
+      type: integer
+      label: Order within the choice question
+      required: true
+    type:
+      type: set
+      label: Type
+      items: [bmi_size, bmi_weight, choice, container, date, exit, exclusive, integer, text, step]
+      required: true
+    answer_id:
+      type: text
+      label: Answer Id
+    answer_value:
+      type: text
+      label: Answer Value
+      description: The answer to store if this option is selected.
+    min:
+      type: integer
+      label: Minimum
+    max:
+      type: integer
+      label: Maximum
+    default:
+      type: text
+      label: Default
+    meta_question:
+      type: reference
+      reference:
+        nameField: name
+        entity: metaQuestion
+      label: Meta Question

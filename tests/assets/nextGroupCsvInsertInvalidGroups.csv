@@ -1,0 +1,14 @@
+Study Code;Group;allocated ;Feature A;Feature B;Feature C
+1;acupressure;1;1;1;0
+2;acupressure;1;1;1;0
+3;recommendations;1;0;1;1
+4;recommendations;1;0;1;1
+5;acupressure_recommendations;0;1;1;1
+6;acupressure_recommendations;0;1;1;1
+7;bar;0;1;1;0
+8;recommendations;0;0;1;1
+9;acupressure_recommendations;0;1;1;1
+10;acupressure;0;1;1;0
+11;acupressure;0;1;1;0
+12;acupressure;0;1;1;0
+13;foo;0;1;1;0

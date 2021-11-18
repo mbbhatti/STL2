@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Tests
+/tests
+phpunit.xml.dist
+
+# Flynn-related
+.buildpacks
+.editorconfig
+Aptfile
+Procfile
+
+# Others
+apache_app.conf
+.env
+.env.insight
+README.md

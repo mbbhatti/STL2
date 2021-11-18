@@ -1,0 +1,81 @@
+<ul class="nav navbar-nav navbar-right">
+    <li {% if app.request.get('_route') == 'csv-export' %} class="active" {% endif%}>
+        <a href="{{ crud.generateURL('csv-export', {}) }}">
+            CSV Export
+        </a>
+    </li>
+    <li class="dropdown{% if crudEntity in ['study', 'feature', 'group', 'configuration'] %} active{% endif%}">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Study<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li {% if crudEntity == 'study' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'study'}) }}">
+                    Study
+                </a>
+            </li>
+            <li {% if crudEntity == 'feature' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'feature'}) }}">
+                    Features
+                </a>
+            </li>
+            <li {% if crudEntity == 'group' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'group'}) }}">
+                    Groups
+                </a>
+            </li>
+            <li {% if crudEntity == 'configuration' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'configuration'}) }}">
+                    App Configurations
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="dropdown{% if crudEntity in ['localization', 'questionnaire', 'metaQuestion', 'freeInputQuestion', 'scaleQuestion', 'choiceQuestion', 'choice'] %} active{% endif%}">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Questionnaires<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li {% if crudEntity == 'localization' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'localization'}) }}">
+                    Localization
+                </a>
+            </li>
+            <li {% if crudEntity == 'questionnaire' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'questionnaire'}) }}">
+                    Questionnaires
+                </a>
+            </li>
+            <li {% if crudEntity == 'metaQuestion' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'metaQuestion'}) }}">
+                    Meta Questions
+                </a>
+            </li>
+            <li {% if crudEntity == 'freeInputQuestion' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'freeInputQuestion'}) }}">
+                    Free Input Questions
+                </a>
+            </li>
+            <li {% if crudEntity == 'scaleQuestion' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'scaleQuestion'}) }}">
+                    Scale Questions
+                </a>
+            </li>
+            <li {% if crudEntity == 'choiceQuestion' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'choiceQuestion'}) }}">
+                    Choice Questions
+                </a>
+            </li>
+            <li {% if crudEntity == 'choice' %} class="active" {% endif%}>
+                <a href="{{ crud.generateURL('crudList', {'entity': 'choice'}) }}">
+                    Choices
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li {% if app.request.get('_route') == 'nextGroup-import-view' %} class="active" {% endif%}>
+        <a href="{{ crud.generateURL('nextGroup-import-view', {}) }}">
+            Group Upload
+        </a>
+    </li>
+</ul>

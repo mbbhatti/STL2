@@ -1,0 +1,48 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: deploy-acud2backend
+    labels:
+        app: acud2backend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: acud2backend
+    template:
+        metadata:
+            labels:
+                app: acud2backend
+        spec:
+            containers:
+                - name: webserver
+                  image:  GHCR_IMAGE
+                  ports:
+                      - containerPort: 80
+                  envFrom:
+                      - configMapRef:
+                            name: cm-acud2backend
+                  #resources:
+                  #    requests:
+                  #        memory: 256Mi
+                  #        cpu: 1000m
+                  #    limits:
+                  #        memory: 1024Mi
+                  #        cpu: 2000m
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+    name: svc-acud2backend
+    labels:
+        app: server
+spec:
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
+    selector:
+        app: acud2backend
+    type: NodePort

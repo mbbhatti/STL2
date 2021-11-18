@@ -1,0 +1,13 @@
+body {
+    padding-top: 50px;
+}
+.btn-crudlex {
+    margin: 5px 5px 5px 5px;
+}
+.tooltip-crudlex {
+    cursor: pointer;
+}
+.select2-container {
+    width: 100% !important;
+    padding: 0;
+}

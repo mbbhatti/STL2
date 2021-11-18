@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div id="nextGroupImport" class="container">
+        <form method="post" enctype="multipart/form-data" href="{{ crud.generateURL('nextGroup-import-csv', {}) }}">
+            <div id="uploadForm" class="form-group ">
+                <h1>File Upload for Groups</h1>
+                <label for="file" class="control-label">
+                    Please choose a CSV File for upload.
+                </label>
+                <input id="file-input-csv-import" class="form-control" name="file" type="file" size="50" accept="text/*"
+                       required="required">
+            </div>
+            <button type="submit" class="btn btn-default btn-success">Upload</button>
+        </form>
+    </div>
+{% endblock %}

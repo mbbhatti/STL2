@@ -1,0 +1,20 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div id="exportCSV" class="container">
+        <form method="POST" href="{{ crud.generateURL('do-csv-export', {}) }}">
+            <div class="form-group ">
+                <h3>Export a study as CSV</h3>
+                <label for="study" class="control-label">
+                    Please choose a study to export as CSV.
+                </label>
+                <select class="form-control" id="study" name="study">
+                    {% for study in studies %}
+                        <option value="{{ study['id'] }}">{{ study['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default btn-success">Export</button>
+        </form>
+    </div>
+{% endblock %}

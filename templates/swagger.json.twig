@@ -1,0 +1,702 @@
+{
+    "openapi" : "3.0.1",
+    "info" : {
+        "title" : "ACUD 2 Backend",
+        "description" : "This is the documentation for the ACUD 2 Backend API",
+        "version" : "1.0.0"
+    },
+    "servers" : [ {
+        "url" : "{{ app.request.schemeAndHttpHost ~ app.request.baseUrl }}"
+    } ],
+    "tags" : [ {
+        "name" : "api v1",
+        "description" : "API requiring basic authentication."
+    }, {
+        "name" : "openapi v1",
+        "description" : "Freely accessible API requiring no authentication."
+    } ],
+    "paths" : {
+        "/api/v1/question" : {
+            "get" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To get the questions of an user.",
+                "parameters" : [ {
+                    "name" : "Accept-Language",
+                    "in" : "header",
+                    "description" : "The desired language according to https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4. If no language is supported from the given languages or this header is not given at all, the endpoint falls back to de-de.",
+                    "required" : false,
+                    "style" : "simple",
+                    "explode" : false,
+                    "schema" : {
+                        "type" : "string"
+                    }
+                }, {
+                    "name" : "If-None-Match",
+                    "in" : "header",
+                    "description" : "This endpoint supports ETags, send the last received ETag response header within this header and receive an empty HTTP 304 if the content hasn't changed.",
+                    "required" : false,
+                    "style" : "simple",
+                    "explode" : false,
+                    "schema" : {
+                        "type" : "string"
+                    }
+                } ],
+                "responses" : {
+                    "200" : {
+                        "description" : "Getting the questions with success.",
+                        "headers" : {
+                            "ETag" : {
+                                "description" : "The current valid ETag.",
+                                "style" : "simple",
+                                "explode" : false,
+                                "schema" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Questionnaires"
+                                }
+                            }
+                        }
+                    },
+                    "304" : {
+                        "description" : "The content hasn't changed for the given If-None-Match header."
+                    },
+                    "401" : {
+                        "description" : "The user could not be authorized.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            }
+        },
+        "/api/v1/user" : {
+            "get" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To get the data of the own user.",
+                "responses" : {
+                    "200" : {
+                        "description" : "Getting the own user with success.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description" : "The user could not be authorized.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            },
+            "post" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To register an user",
+                "responses" : {
+                    "200" : {
+                        "description" : "The user was successfully registered.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/UserAuth"
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "The user could not be registered due to no more available groups or no available current study.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            },
+            "delete" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To leave the study with the own user.",
+                "responses" : {
+                    "200" : {
+                        "description" : "The user left the study. The status is false if the user already left the study.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description" : "The user could not be authorized.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            }
+        },
+        "/api/v1/answer" : {
+            "get" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To get the study answers.",
+                "responses" : {
+                    "200" : {
+                        "description" : "The users answers.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/PersistentAnswers"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description" : "The user could not be authorized.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            },
+            "post" : {
+                "tags" : [ "api v1" ],
+                "summary" : "To answer study questions.",
+                "parameters" : [ {
+                    "name" : "Answers",
+                    "in" : "query",
+                    "description" : "The given answers.",
+                    "required" : true,
+                    "style" : "form",
+                    "explode" : true,
+                    "schema" : {
+                        "$ref" : "#/components/schemas/Answers"
+                    }
+                } ],
+                "responses" : {
+                    "200" : {
+                        "description" : "The answers are successfully persisted.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Invalid answers given.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/AnswerStatus"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description" : "The user could not be authorized.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security" : [ {
+                    "basic" : [ ]
+                } ]
+            }
+        },
+        "/openapi/v1/ping" : {
+            "get" : {
+                "tags" : [ "openapi v1" ],
+                "summary" : "To monitor the backend. If this endpoint delivers anything else than an HTTP 200, then something is wrong.",
+                "responses" : {
+                    "200" : {
+                        "description" : "Everything is alright.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components" : {
+        "schemas" : {
+            "PersistentObject" : {
+                "required" : [ "id" ],
+                "type" : "object",
+                "properties" : {
+                    "id" : {
+                        "type" : "integer",
+                        "description" : "The object id.",
+                        "example" : 1
+                    }
+                }
+            },
+            "TypedObject" : {
+                "required" : [ "type" ],
+                "type" : "object",
+                "properties" : {
+                    "type" : {
+                        "type" : "string",
+                        "description" : "The actual type name. 'exit' means to leave the study if this answer is given and 'exclusive' has the meaning that this choice excludes the other ones. A choice of type 'container' is just an arbitary container carrying a deeper nested meta_question.",
+                        "example" : "choice",
+                        "enum" : [ "bmi_size", "bmi_weight", "choice", "container", "date", "exit", "exclusive", "integer", "text", "step" ]
+                    }
+                }
+            },
+            "ConstrainedObject" : {
+                "type" : "object",
+                "properties" : {
+                    "min" : {
+                        "type" : "integer",
+                        "description" : "The minimum value to fulfill.",
+                        "example" : 1
+                    },
+                    "max" : {
+                        "type" : "integer",
+                        "description" : "The maximum value to fulfill.",
+                        "example" : 10
+                    }
+                }
+            },
+            "Status" : {
+                "required" : [ "ok" ],
+                "type" : "object",
+                "properties" : {
+                    "ok" : {
+                        "type" : "boolean",
+                        "description" : "Whether the status is ok or not.",
+                        "example" : false
+                    }
+                }
+            },
+            "BaseUser" : {
+                "required" : [ "configuration", "features" ],
+                "type" : "object",
+                "properties" : {
+                    "features" : {
+                        "type" : "array",
+                        "description" : "The features of this user.",
+                        "items" : {
+                            "type" : "string",
+                            "example" : "acupressure"
+                        }
+                    },
+                    "configuration" : {
+                        "type" : "object",
+                        "description" : "The configuration of this user. The key names are the configuration names, the values can be either a single string or an array of strings defining the configuration value.",
+                        "example" : {
+                            "foo" : "one",
+                            "bar" : [ "two", "three" ]
+                        }
+                    }
+                }
+            },
+            "UserAuth" : {
+                "required" : [ "auth" ],
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/BaseUser"
+                }, {
+                    "properties" : {
+                        "auth" : {
+                            "type" : "string",
+                            "description" : "the user auth",
+                            "example" : "7_13fa27f57d3e3d35ec9dbcb5aa1ec66f44f75ec6e42ee7896a0abe4e6a93702e"
+                        }
+                    }
+                } ]
+            },
+            "User" : {
+                "required" : [ "left_at" ],
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/BaseUser"
+                }, {
+                    "properties" : {
+                        "left_at" : {
+                            "type" : "string",
+                            "description" : "The moment the user left the study. Is is null if the user is participating in the study.",
+                            "format" : "date-time",
+                            "example" : "2017-01-25T14:35:16Z"
+                        }
+                    }
+                } ]
+            },
+            "ScaleQuestion" : {
+                "required" : [ "max_text", "max_value", "min_text", "min_value" ],
+                "type" : "object",
+                "properties" : {
+                    "min_text" : {
+                        "type" : "string",
+                        "description" : "For the question\\_type 'scale', the descriptive text for Minimum.",
+                        "example" : "Very little."
+                    },
+                    "max_text" : {
+                        "type" : "string",
+                        "description" : "For the question\\_type 'scale', the descriptive text for Maximum.",
+                        "example" : "Very much."
+                    },
+                    "min_value" : {
+                        "type" : "integer",
+                        "description" : "For the question\\_type 'scale', the lower bound of value.",
+                        "example" : 1
+                    },
+                    "max_value" : {
+                        "type" : "integer",
+                        "description" : "For the question\\_type 'scale', the upper bound of value.",
+                        "example" : 10
+                    }
+                }
+            },
+            "FreeInputQuestion" : {
+                "required" : [ "text" ],
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/ConstrainedObject"
+                }, {
+                    "properties" : {
+                        "text" : {
+                            "type" : "string",
+                            "description" : "For the question\\_type 'free\\_input', the input text with a replacement mark '[\\_]' where the input should be rendered.",
+                            "example" : "Your age: [_] years"
+                        }
+                    }
+                } ]
+            },
+            "ChoiceQuestion" : {
+                "required" : [ "choices" ],
+                "type" : "object",
+                "properties" : {
+                    "choices" : {
+                        "type" : "array",
+                        "description" : "For the question\\_type 'choice', the single choices.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/Choice"
+                        }
+                    }
+                }
+            },
+            "Questionnaires" : {
+                "required" : [ "questionnaires" ],
+                "type" : "object",
+                "properties" : {
+                    "questionnaires" : {
+                        "type" : "array",
+                        "description" : "The questionnaires.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/Questionnaire"
+                        }
+                    }
+                }
+            },
+            "Questionnaire" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/PersistentObject"
+                }, {
+                    "required" : [ "label", "meta_questions", "moment" ],
+                    "properties" : {
+                        "label" : {
+                            "type" : "string",
+                            "description" : "The questionnaire label.",
+                            "example" : "Basics"
+                        },
+                        "moment" : {
+                            "type" : "string",
+                            "description" : "The moment the questionnaire should be asked.",
+                            "example" : "premenstrual",
+                            "enum" : [ "baseline", "daily_calculated_five_days_before_menstruation", "calculated_five_days_before_menstruation", "calculated_first_day_of_menstruation", "daily_during_menstruation", "end_of_each_menstruation", "end_of_every_third_menstruation" ]
+                        },
+                        "meta_questions" : {
+                            "type" : "array",
+                            "description" : "The meta questions of the questionnaire.",
+                            "items" : {
+                                "$ref" : "#/components/schemas/MetaQuestion"
+                            }
+                        }
+                    }
+                } ]
+            },
+            "MetaQuestion" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/PersistentObject"
+                }, {
+                    "required" : [ "question" ],
+                    "properties" : {
+                        "headline" : {
+                            "type" : "string",
+                            "description" : "The question headline.",
+                            "example" : "A MetaQuestion"
+                        },
+                        "label" : {
+                            "type" : "string",
+                            "description" : "The question label.",
+                            "example" : "Your Age"
+                        },
+                        "question" : {
+                            "type" : "object",
+                            "description" : "The actual question data depending on the type.",
+                            "allOf" : [ {
+                                "$ref" : "#/components/schemas/Question"
+                            } ]
+                        }
+                    }
+                } ]
+            },
+            "Choice" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/PersistentObject"
+                }, {
+                    "$ref" : "#/components/schemas/TypedObject"
+                }, {
+                    "$ref" : "#/components/schemas/ConstrainedObject"
+                }, {
+                    "properties" : {
+                        "text" : {
+                            "type" : "string",
+                            "description" : "The choice text.",
+                            "example" : "Yes"
+                        },
+                        "answer_id" : {
+                            "type" : "string",
+                            "description" : "The id of the answer of this choice.",
+                            "example" : "4242"
+                        },
+                        "answer_value" : {
+                            "type" : "string",
+                            "description" : "The answer to store if this option is selected.",
+                            "example" : "42"
+                        },
+                        "meta_question" : {
+                            "type" : "object",
+                            "description" : "If this choice is selected, this meta\\_question becomes relevant. Note that this can contain any question type, even another choice question, so it can be deeply nested.",
+                            "allOf" : [ {
+                                "$ref" : "#/components/schemas/MetaQuestion"
+                            } ]
+                        },
+                        "default" : {
+                            "type" : "string",
+                            "description" : "The default value to be taken if the UI should set.",
+                            "example" : "42"
+                        }
+                    }
+                } ]
+            },
+            "Question" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/PersistentObject"
+                }, {
+                    "required" : [ "question_type" ],
+                    "properties" : {
+                        "question_type" : {
+                            "type" : "string",
+                            "description" : "The type of the actual question.",
+                            "example" : "free_input",
+                            "enum" : [ "free_input", "choice", "scale" ]
+                        },
+                        "type" : {
+                            "type" : "string",
+                            "description" : "For the question\\_type **'free\\_input'**, describes the input type, can be one of:\n * 'text'\n * 'integer'\n * 'date'\n\nfor the question\\_type **'choice'**, describes the type, can be one of:\n * 'bmi': display choices as bmi input for size and weight\n * 'button': display choices as single buttons, one is selectable\n * 'choice': display choices as list, an answer must be given for one of them\n * 'list': display choices as list of questions on one screen\n * 'multiple': display choices as list, multiple are selectable via checkboxes\n * 'radio': display choices as list, one is selectable via a radio button\n * 'steps': a series of steps",
+                            "example" : "integer",
+                            "enum" : [ "bmi", "button", "date", "integer", "multiple", "radio", "text", "steps" ]
+                        },
+                        "answer_id" : {
+                            "type" : "string",
+                            "description" : "The id of the answer of this question.",
+                            "example" : "4242"
+                        }
+                    }
+                }, {
+                    "$ref" : "#/components/schemas/FreeInputQuestion"
+                }, {
+                    "$ref" : "#/components/schemas/ChoiceQuestion"
+                }, {
+                    "$ref" : "#/components/schemas/ScaleQuestion"
+                } ]
+            },
+            "Answer" : {
+                "required" : [ "answer", "answer_id" ],
+                "type" : "object",
+                "properties" : {
+                    "answer" : {
+                        "type" : "string",
+                        "description" : "The answer.",
+                        "example" : "3"
+                    },
+                    "answer_id" : {
+                        "type" : "string",
+                        "description" : "The id of the answer of this choice.",
+                        "example" : "4001"
+                    },
+                    "cycle" : {
+                        "type" : "integer",
+                        "description" : "The cycle this answer belongs to.",
+                        "example" : 2
+                    },
+                    "day" : {
+                        "type" : "integer",
+                        "description" : "The day this answer belongs to.",
+                        "example" : 3
+                    },
+                    "app_version" : {
+                        "type" : "string",
+                        "description" : "The version of the app sending the answer.",
+                        "example" : "1.0.0"
+                    }
+                }
+            },
+            "Answers" : {
+                "required" : [ "answers" ],
+                "type" : "object",
+                "properties" : {
+                    "answers" : {
+                        "type" : "array",
+                        "description" : "The array of answers.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/Answer"
+                        }
+                    }
+                }
+            },
+            "StatusInvalidAnswer" : {
+                "type" : "object",
+                "properties" : {
+                    "answer" : {
+                        "type" : "array",
+                        "description" : "The answer.",
+                        "items" : {
+                            "type" : "string",
+                            "example" : "required"
+                        }
+                    }
+                }
+            },
+            "StatusInvalidAnswerIssues" : {
+                "type" : "object",
+                "properties" : {
+                    "issues" : {
+                        "type" : "array",
+                        "description" : "The invalid answer.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/StatusInvalidAnswer"
+                        }
+                    }
+                }
+            },
+            "StatusIssue" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/Answer"
+                }, {
+                    "$ref" : "#/components/schemas/StatusInvalidAnswerIssues"
+                } ]
+            },
+            "AnswerStatus" : {
+                "required" : [ "ok" ],
+                "type" : "object",
+                "properties" : {
+                    "ok" : {
+                        "type" : "boolean",
+                        "description" : "Whether the status is ok or not.",
+                        "example" : false
+                    },
+                    "error" : {
+                        "type" : "string",
+                        "description" : "Optional error message.",
+                        "example" : "Element not valid"
+                    },
+                    "issues" : {
+                        "type" : "array",
+                        "description" : "Array of issues that occurred.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/StatusIssue"
+                        }
+                    }
+                }
+            },
+            "PersistentAnswer" : {
+                "type" : "object",
+                "allOf" : [ {
+                    "$ref" : "#/components/schemas/PersistentObject"
+                }, {
+                    "$ref" : "#/components/schemas/Answer"
+                } ]
+            },
+            "PersistentAnswers" : {
+                "required" : [ "answers" ],
+                "type" : "object",
+                "properties" : {
+                    "answers" : {
+                        "type" : "array",
+                        "description" : "The array of answers.",
+                        "items" : {
+                            "$ref" : "#/components/schemas/PersistentAnswer"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes" : {
+            "basic" : {
+                "type" : "http",
+                "description" : "Basic Authentication for all endpoints except the open api",
+                "scheme" : "basic"
+            }
+        }
+    }
+}
